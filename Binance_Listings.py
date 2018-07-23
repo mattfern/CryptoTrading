@@ -21,4 +21,13 @@ def get_symbols():
             writer.writerow({'Symbol': symb})
             print(s['symbol'])
 
-get_symbols()
+# get_symbols()
+
+# Load Binance_Symbols.csv into pandas dataframe
+
+def make_df():
+    ReadCSV = pd.read_csv('Binance_Symbols.csv')
+    df = pd.DataFrame(ReadCSV)
+    print(df[1])
+
+make_df() 
