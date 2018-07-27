@@ -3,6 +3,7 @@ import json
 import urllib.request
 import pandas as pd
 import os
+import datetime
 
 # Get Symbols from binance api
 def get_symbols():
@@ -57,7 +58,28 @@ def get_symbols_data(denominator):
         for row in reader:
             print(' '.join(row))
 
-get_symbols_data('BTC.csv')
-get_symbols_data('ETH.csv')
-get_symbols_data('USDT.csv')
-get_symbols_data('BNB.csv')
+# get_symbols_data('BTC.csv')
+# get_symbols_data('ETH.csv')
+# get_symbols_data('USDT.csv')
+# get_symbols_data('BNB.csv')
+
+# interval - one of (1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M)
+def get_price_data(denominator, interval):
+    with open(''.join([denominator, '.csv']), newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            symbol = ''.join(row)
+            url = "https://www.binance.com/api/v1/klines"
+            symbolQ = ''.join(['?symbol=', symbol])
+            intervalQ = ''.join(['&interval=', interval])
+            #limitQ = ''.join(['&limit=', limit])
+            query = ''.join([url, symbolQ, intervalQ])
+            data = json.load(urllib.request.urlopen(query))
+            # print(data[0][6])
+            for d in data:    
+                closetime = d[6]
+                closetime = datetime.datetime.fromtimestamp(closetime/1000.0)
+                closetime = closetime.strftime('%Y-%m-%d')
+                print(closetime, symbol, d[1])
+
+get_price_data('BTC', '1d')
